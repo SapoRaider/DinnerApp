@@ -13,7 +13,11 @@ def profile(request):
     return render(request, 'DinnerApp/profile.html')
 
 def login(request):
-    return render(request, 'registration/login.html')
+    data = {
+        "Title":"Login",
+        "css": "DinnerApp/css/login.css"
+    }
+    return render(request, 'registration/login.html',data)
 
 
 
