@@ -19,6 +19,10 @@ from DinnerApp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index),
-    path('login/', views.login, name="login")
+    path('', views.index, name="home"),
+    path('usuraios/', include("django.contrib.auth.urls")),
+    path('login/', views.loginuser, name="login"),
+    path('register/', views.register, name="register" ),
+    path('logout/', views.logoutuser , name='logout')
+
 ]

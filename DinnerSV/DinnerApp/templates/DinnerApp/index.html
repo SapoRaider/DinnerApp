@@ -6,7 +6,7 @@
 <html lang="en">
 
 <head>
-  <title>{% block title %} Inicio {% endblock title %}</title>
+  <title>{% block Title %} Inicio {% endblock Title %}</title>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,31 +23,59 @@
   <header>
     <nav class="navbar navbar-expand-lg bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">DinnerApp</a>
+        <a class="navbar-brand" href="/">DinnerApp</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="#">Nosotros</a>
+            <a class="nav-link active" aria-current="page" href="/">Nosotros</a>
             <a class="nav-link active" href="#">Restaurantes</a>
             <a class="nav-link active" href="#">Contacto</a>
             <a class="nav-link active" href="#">Mejor valorados</a>
             <a class="nav-link active" href="#">Cerca de ti</a>
+            {% if user.is_authenticated %}
+              <a class="nav-link active" href="/logout">Cerrar sesion</a>
+            {% else %}
+              <a class="nav-link active" href="/login">Iniciar Sesion</a>
+              <a class="nav-link active" href="/register">Registrarse</a>
+            {% endif %}
+
           </div>
         </div>
         <form class="form-inline">
               <input class="form mr-sm-2" type="search" placeholder="Buscar" aria-label="Search">
               <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Buscar</button>
-          </form>
+        </form>
       </div>
     </nav>
+
+    {% if messages %}
+      {% for message in messages %}
+      <div class="notification {{message.tags}}">
+        {{ mesagge }}
+      </div>
+      {% endfor %}
+    {% endif %}
+
   </header>
   <main>
 
-    <p>a</p>
+
 
     {% block content %}
+
+    <div>
+      <div class="row">
+          <div class="col">
+              <img src="{% static imgindex %}" alt="mesa">
+          </div>
+          <div class="col me-3 py-4 bg-light">
+              <p>DinnerApp es una empresa intermediaria entre restaurantes y clientes. Permite a los clientes hacer reservacion de mesas y menú en restaurantes inscritos a elección. Para realizar una reservación el cliente debe estar registrado en la aplicación.</p>
+          </div>
+
+      </div>
+    </div>
         
     {% endblock content %}
   </main>
