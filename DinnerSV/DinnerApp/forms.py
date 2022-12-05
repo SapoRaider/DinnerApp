@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     numero = forms.IntegerField(label='Numero de telefono')
+    nombre = forms.CharField(max_length=20)
+    
+
 
 
     

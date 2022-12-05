@@ -62,3 +62,6 @@ def register(request):
 
 
     return render(request, "DinnerApp/register.html", data)
+
+
+# def restaurantes(request):
