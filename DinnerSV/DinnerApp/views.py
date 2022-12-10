@@ -2,14 +2,32 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .models import *
+from .models import User as us
 from .forms import *
 from django.contrib import messages
 # Create your views here.
 
 
 def index(request):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+
+
     data ={
-        "imgindex":"DinnerApp/img/img1.jpg"
+        "imgindex":"DinnerApp/img/img1.jpg",
+        "cliente": cliente,
+        "gerente" : gerente
     }
     return render(request, 'DinnerApp/index.html',data)
 
@@ -20,15 +38,23 @@ def profile(request):
 def loginuser(request):
 
     if request.method == "POST":
-        username = request.POST['username']
+        email = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password )
+        user = authenticate(request, username=email, password=password )
         if user is not None:
             login(request, user)
-            return redirect('home')
+            type_obj = user_type.objects.get(user=user)
+            if user.is_authenticated and type_obj.es_cliente:
+                return redirect('home')
+            elif user.is_authenticated and type_obj.es_gerente:
+                return redirect('home')
+            else:
+                return redirect('home')
         else:
             messages.success(request, ("Ups!, hubo un error iniciando sesion."))
             return redirect('home')
+        
+
 
     data = {
         "Title":"Login",
@@ -42,26 +68,44 @@ def logoutuser(request):
     return redirect('home')
 
 def register(request):
-    if request.method == 'POST':
+
+    form = UserRegisterForm()
+    
+    if (request.method == 'POST'):
         form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username,password=password)
-            login(request, user)
-            messages.success(request, f'Usuario {username} creado')
-            return redirect("/")
+        email = request.POST.get('username')
+        password = request.POST.get('password1')
+        tipo_usuraio = request.POST.get('tipo')
+        numero = request.POST.get('numero')
+        nombre = request.POST.get('Nombre')
+        
+        user = us.objects.create_user(
+            email=email,name=nombre,numero=numero,
+        )
+        user.set_password(password)
+        user.save()
+        
+        usert = None
+        if tipo_usuraio == '2' :
+            usert = user_type(user=user,es_cliente=True)
+        elif tipo_usuraio == '1':
+            usert = user_type(user=user,es_gerente=True)
+        
+        usert.save()
+        #Successfully registered. Redirect to homepage
+          
+        return redirect('home')
 
-    else:
-        form = UserRegisterForm()
-
-    data = {
-        'form' : form
-    }
-
-
+    data = {'form':form}
     return render(request, "DinnerApp/register.html", data)
+
+def viewRestaurantes(request):
+    restaurante = Restaurante.objects.all()
+    data = {
+        'restaurantes' : restaurante,
+        'css' : 'DinnerApp/css/restaurantes.scss'
+    }
+    return render(request, 'DinnerApp/restaurantes.html',data)
 
 
 # def restaurantes(request):
