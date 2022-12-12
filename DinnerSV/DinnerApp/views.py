@@ -126,6 +126,9 @@ def Reservar(request, id):
             hora=emp['horario'],
             menu=emp['menu']
         )
+        reservacion.save()
+        form=''
+        return redirect('home')
 
 
     
