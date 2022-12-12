@@ -107,5 +107,32 @@ def viewRestaurantes(request):
     }
     return render(request, 'DinnerApp/restaurantes.html',data)
 
+def viewPerfilCliente(request):
+    data = {
+        'css' : 'DinnerApp/css/perfil.css',
+        'tittle':'Mi Perfil'
+    }
+    return render(request, 'DinnerApp/cprofile.html',data)
 
+def Reservar(request, id):
+    restauranteid = Restaurante.objects.get(id=id)
+    form = reservacionForm()
+    if (request.method == "POST"):
+        form = reservacionForm(request.POST)
+        emp=form.cleaned_data
+        reservacion=Reservacion(
+            restaurante=restauranteid,
+            usuario=request.user,
+            hora=emp['horario'],
+            menu=emp['menu']
+        )
+
+
+    
+    data= {
+        'form': form,
+        'tittle': 'Reservar'
+    }
+
+    return render(request, 'DinnerApp/reservar.html',data)
 # def restaurantes(request):

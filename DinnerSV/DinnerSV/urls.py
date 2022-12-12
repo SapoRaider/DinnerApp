@@ -24,6 +24,8 @@ urlpatterns = [
     path('login/', views.loginuser, name="login"),
     path('register/', views.register, name="register" ),
     path('logout/', views.logoutuser , name='logout'),
-    path('restaurantes/',views.viewRestaurantes, name="restaurantes")
+    path('restaurantes/',views.viewRestaurantes, name="restaurantes"),
+    path('cprofile/',views.viewPerfilCliente,name="cPerfil"),
+    path('reservar/<int:id>',views.Reservar,name="Reservar")
 
 ]

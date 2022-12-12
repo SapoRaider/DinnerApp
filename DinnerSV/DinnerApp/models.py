@@ -86,17 +86,26 @@ class Restaurante(models.Model):
     redesSociales = models.CharField(max_length=50)
     paginaWeb = models.CharField(max_length=40)
     gerente = models.ForeignKey(User, on_delete=models.CASCADE)
-    # gerente = models.ForeignKey(Gerente,on_delete=models.CASCADE)
+    
 
     def __str__(self):
         return self.nombre
 
-# class Menu(models.Model):
-#     platos = models.
+class Menu(models.Model):
+    nombre = models.CharField(max_length=50)
+    descripcion = models.CharField(max_length=600)
+    restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.nombre
 
 
 class Reservacion(models.Model):
     restaurante = models.ForeignKey(Restaurante, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User,on_delete=models.CASCADE)
     hora = models.TimeField(auto_now=False, auto_now_add=False)
-    menu = models.OneToOneField()
+    menu = models.ForeignKey(Menu,on_delete=models.CASCADE)
+    
+
+class Horarios(models.Model):
+    hora = models.TimeField(auto_now=False,auto_now_add=False)
+    restaurante= models.ForeignKey(Restaurante,on_delete=models.CASCADE)

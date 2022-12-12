@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, user_type, Restaurante
+from .models import User, user_type, Restaurante, Reservacion,Menu,Horarios
 # from .models import CustomUser
 # Register your models here.
 
@@ -39,3 +39,9 @@ admin.site.register(User, UserAdmin)
 admin.site.register(user_type)
 
 admin.site.register(Restaurante)
+
+admin.site.register(Reservacion)
+
+admin.site.register(Menu)
+
+admin.site.register(Horarios)
