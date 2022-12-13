@@ -25,7 +25,11 @@ urlpatterns = [
     path('register/', views.register, name="register" ),
     path('logout/', views.logoutuser , name='logout'),
     path('restaurantes/',views.viewRestaurantes, name="restaurantes"),
-    path('cprofile/',views.viewPerfilCliente,name="cPerfil"),
-    path('reservar/<int:id>',views.Reservar,name="Reservar")
-
+    path('cperfil/',views.viewPerfilCliente,name="cPerfil"),
+    path('gperfil/',views.viewPerfilGerente,name="gPerfil"),
+    path('reservar/<int:id>',views.Reservar,name="Reservar"),
+    path('Reservaciones/',views.Reservaciones,name="Reservaciones"),
+    path('arestaurante/',views.agregarRestaurante,name="AgregarRestaurante"),
+    path('amenu/',views.addmenu,name="addmenu"),
+    path('grestaurante/',views.viewRestauranteG,name="restauranteg"),
 ]

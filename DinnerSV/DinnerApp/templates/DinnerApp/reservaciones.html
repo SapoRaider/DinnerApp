@@ -1,0 +1,83 @@
+{% extends "DinnerApp/index.html" %}
+{% block Title %}
+Reservaciones
+{% endblock Title %}
+
+{% block content %}
+
+{% if reservaciones %}
+
+<a class="btn btn-primary" href="/cperfil">Volver</a>
+
+<section class="light">
+	<div class="container py-2">
+		
+		<div class="h1 text-center text-dark" id="pageHeaderTitle">Reservaciones</div>
+		<div class="row align-items-center">
+			{% for reservacion in reservaciones %}
+			<div class="col">
+				<div class="container">
+					<section class="mx-auto my-5" style="max-width: 23rem;">
+						
+                        <div class="card">
+                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                <img src="https://mdbootstrap.com/img/Photos/Horizontal/Food/8-col/img (5).jpg" class="img-fluid" />
+                                <a href="#!">
+                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title font-weight-bold"><a>{{reservacion.restaurante.nombre}}</a></h5>
+                                <ul class="list-unstyled list-inline mb-0">
+                                    <li class="list-inline-item me-0">
+                                    <i class="bi bi-star-fill text-warning fa-xs"> </i>
+                                    </li>
+                                    <li class="list-inline-item me-0">
+                                    <i class="bi bi-star-fill text-warning fa-xs"></i>
+                                    </li>
+                                    <li class="list-inline-item me-0">
+                                    <i class="bi bi-star-fill text-warning fa-xs"></i>
+                                    </li>
+                                    <li class="list-inline-item me-0">
+                                    <i class="bi bi-star-fill text-warning fa-xs"></i>
+                                    </li>
+                                    <li class="list-inline-item">
+                                    <i class="bi bi-star-half text-warning fa-xs"></i>
+                                    </li>
+                                    <li class="list-inline-item">
+                                    <p class="text-muted">4.5 (413)</p>
+                                    </li>
+                                </ul>
+                                <p class="mb-2">{{reservacion.restaurante.capacidad}} <i class="bi bi-person-fill"></i> • {{reservacion.restaurante.ciudad}} • {{reservacion.restaurante.categoria}}</p>
+                                <p class="card-text">
+                                    {{reservacion.restaurante.descripcion}}
+                                </p>
+                                <hr class="my-2" />
+                                <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                                    <p class="fs-3">{{reservacion.hora}}</p>
+                                </div>
+                                <hr class="my-2" />
+                                <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                                    <p class="fs-3">{{reservacion.menu.nombre}}</p>
+                                </div>
+                                <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                                    <p class="fs-5">{{reservacion.menu.descripcion}}</p>
+                                </div>
+
+                            </div>
+                        </div>
+					
+					</section>
+				</div>
+			</div>
+        	{% endfor %}
+		</div>
+	</div>
+</section>
+{% else %}
+<div class="alert alert-warning">
+    No hay reservaciones registradas
+</div>
+{% endif %}
+
+{% endblock content %}

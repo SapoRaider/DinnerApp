@@ -27,7 +27,7 @@ def index(request):
     data ={
         "imgindex":"DinnerApp/img/img1.jpg",
         "cliente": cliente,
-        "gerente" : gerente
+        "gerente" : gerente,
     }
     return render(request, 'DinnerApp/index.html',data)
 
@@ -92,6 +92,8 @@ def register(request):
             usert = user_type(user=user,es_gerente=True)
         
         usert.save()
+        user = authenticate(request,username=email,password=password)
+        login(request,user)
         #Successfully registered. Redirect to homepage
           
         return redirect('home')
@@ -100,31 +102,111 @@ def register(request):
     return render(request, "DinnerApp/register.html", data)
 
 def viewRestaurantes(request):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+
+
     restaurante = Restaurante.objects.all()
     data = {
         'restaurantes' : restaurante,
-        'css' : 'DinnerApp/css/restaurantes.scss'
+        'css' : 'DinnerApp/css/restaurantes.scss',
+        "cliente": cliente,
+        "gerente" : gerente,
     }
     return render(request, 'DinnerApp/restaurantes.html',data)
 
 def viewPerfilCliente(request):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
     data = {
         'css' : 'DinnerApp/css/perfil.css',
-        'tittle':'Mi Perfil'
+        'tittle':'Mi Perfil',
+        "cliente": cliente,
+        "gerente" : gerente,
     }
     return render(request, 'DinnerApp/cprofile.html',data)
 
+def viewPerfilGerente(request):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+    data = {
+        'css' : 'DinnerApp/css/perfil.css',
+        'tittle':'Mi Perfil',
+        "cliente": cliente,
+        "gerente" : gerente,
+    }
+    return render(request, 'DinnerApp/gprofile.html',data)
+
 def Reservar(request, id):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+
     restauranteid = Restaurante.objects.get(id=id)
-    form = reservacionForm()
+
+
+
+    form = reservacionForm(restauranteid=restauranteid)
+
+    def get_form_kwargs(self):
+        """ Passes the request object to the form class.
+         This is necessary to only display members that belong to a given user"""
+
+        kwargs = super(Reservar, self).get_form_kwargs()
+        kwargs['restauranteid'] = self.restauranteid
+        return kwargs    
+
+
     if (request.method == "POST"):
-        form = reservacionForm(request.POST)
-        emp=form.cleaned_data
+        form = reservacionForm(data=request.POST,restauranteid=restauranteid)
         reservacion=Reservacion(
             restaurante=restauranteid,
             usuario=request.user,
-            hora=emp['horario'],
-            menu=emp['menu']
+            hora=request.POST.get('horario'),
+            menu=Menu.objects.get(id=request.POST.get('menu'))
         )
         reservacion.save()
         form=''
@@ -134,8 +216,130 @@ def Reservar(request, id):
     
     data= {
         'form': form,
-        'tittle': 'Reservar'
+        'tittle': 'Reservar',
+        "cliente": cliente,
+        "gerente" : gerente,
     }
 
     return render(request, 'DinnerApp/reservar.html',data)
 # def restaurantes(request):
+def Reservaciones(request):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+    resevacion = Reservacion.objects.all()
+    data = {
+    'reservaciones': resevacion,
+    "cliente": cliente,
+    "gerente" : gerente,
+    }
+
+    return render(request,'DinnerApp/reservaciones.html',data)
+
+def agregarRestaurante(request):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+    form = restauranteForm()
+    if (request.method == 'POST'):
+        form = restauranteForm(request.POST)
+        restaurante=Restaurante(
+            nombre = request.POST.get('nombre'),
+            correo = request.POST.get('correo'),
+            descripcion = request.POST.get('descripcion'),
+            categoria = request.POST.get('categoria'),
+            telefono = request.POST.get('telefono'),
+            ciudad = request.POST.get('ciudad'),
+            direccion = request.POST.get('direccion'),
+            capacidad = request.POST.get('capacidad'),
+            redesSociales = request.POST.get('redesSociales'),
+            paginaWeb = request.POST.get('paginaWeb'),
+            gerente= request.user
+        )
+        restaurante.save()
+        form=''
+        return redirect('/gperfil')
+    data={
+        'form':form,
+        "cliente": cliente,
+        "gerente" : gerente,
+
+    }
+    return render(request,'DinnerApp/CrearRestaurante.html',data)
+
+
+def addmenu(request):
+
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+
+    form = menuForm(request=request)
+    if (request.method == "POST"):
+        form = menuForm(data=request.POST,request=request)
+        menu=Menu(
+            nombre=request.POST.get('nombre'),
+            descripcion=request.POST.get('descripcion'),
+            restaurante=Restaurante.objects.get(id=request.POST.get('restaurante'))
+        )
+        menu.save()
+        form = ''
+        return redirect('gPerfil')
+    data ={
+        'form':form,
+        "cliente": cliente,
+        "gerente" : gerente,
+    }
+
+    return render(request, 'DinnerApp/amenu.html',data)
+
+def viewRestauranteG(request):
+    current_user = request.user
+    gerente = False
+    cliente = False
+
+    if current_user.is_authenticated:
+        if user_type.objects.get(user = current_user).es_cliente:
+            cliente = "True"
+            gerente = "False"
+        elif user_type.objects.get(user = current_user).es_gerente:
+            gerente = "True"
+            cliente = "False"
+
+    restaurante = Restaurante.objects.filter(gerente=current_user)
+    data = {
+        'restaurantes' : restaurante,
+        'css' : 'DinnerApp/css/restaurantes.scss',
+        "cliente": cliente,
+        "gerente" : gerente,
+    }
+    return render(request, 'DinnerApp/grestaurantes.html',data)

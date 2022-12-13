@@ -1,0 +1,23 @@
+{% extends 'DinnerApp/index.html' %}
+
+
+
+{% block Tittle %}
+Agregar Menu
+{% endblock Tittle %}
+
+{% block content %}
+
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <form class="form" method="post">
+
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" id="submit" class="btn btn-success">Agregar</button>
+
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
