@@ -237,7 +237,7 @@ def Reservaciones(request):
             gerente = "True"
             cliente = "False"
 
-    resevacion = Reservacion.objects.all()
+    resevacion = Reservacion.objects.filter(usuario=current_user)
     data = {
     'reservaciones': resevacion,
     "cliente": cliente,

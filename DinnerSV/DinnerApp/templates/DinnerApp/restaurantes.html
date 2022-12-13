@@ -53,7 +53,12 @@ Restaurantes
 							{{restaurante.descripcion}}
 						</p>
 						<hr class="my-3" />
-						<a  class="btn btn-primary" href="/reservar/{{restaurante.id}}" role="button">Reservar</a>
+						{% if user.is_authenticated %}
+							<a  class="btn btn-primary" href="/reservar/{{restaurante.id}}" role="button">Reservar</a>
+						{% else %}
+							<p class="fs-5">Debes iniciar sesion para Reservar</p>
+						{% endif %}
+						
 						</div>
 					</div>
 					
